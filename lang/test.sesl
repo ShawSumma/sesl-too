@@ -1,0 +1,3 @@
+set x 2
+print $x
+save-to worlds/test.json (make-world)

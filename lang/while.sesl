@@ -1,0 +1,28 @@
+proc while while-case while-then {
+    set while-ret
+    set back (set-jump)
+    if (while-case) {
+        set while-ret (while-then)
+        long-jump $back
+    }
+    pass $while-ret
+}
+
+proc world-to-file file-name {
+    set world (make-world)
+    if $world {
+        print saving at (cat x= $x)
+        save-to $file-name $world
+    } {
+        print loading world at (cat x= $x)
+    }
+}
+
+set x 0
+while {< $x 10} {
+    mut x (+ $x 1)
+    if (= $x 8) {
+        world-to-file worlds/test.json
+    }
+    print $x
+}

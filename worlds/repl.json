@@ -1,0 +1,145 @@
+{
+    "locals": [
+        {
+            "table": {
+                "fib": {
+                    "args": [
+                        "n"
+                    ],
+                    "nodes": [
+                        {
+                            "args": [
+                                {
+                                    "args": [
+                                        {
+                                            "load": "n",
+                                            "type": "load"
+                                        },
+                                        {
+                                            "string": "2",
+                                            "type": "string"
+                                        }
+                                    ],
+                                    "func": {
+                                        "string": "%3C",
+                                        "type": "string"
+                                    },
+                                    "type": "call"
+                                },
+                                {
+                                    "type": "push",
+                                    "value": {
+                                        "args": [],
+                                        "nodes": [
+                                            {
+                                                "args": [
+                                                    {
+                                                        "load": "n",
+                                                        "type": "load"
+                                                    }
+                                                ],
+                                                "func": {
+                                                    "string": "pass",
+                                                    "type": "string"
+                                                },
+                                                "type": "call"
+                                            }
+                                        ],
+                                        "type": "nodes"
+                                    }
+                                },
+                                {
+                                    "type": "push",
+                                    "value": {
+                                        "args": [],
+                                        "nodes": [
+                                            {
+                                                "args": [
+                                                    {
+                                                        "args": [
+                                                            {
+                                                                "args": [
+                                                                    {
+                                                                        "load": "n",
+                                                                        "type": "load"
+                                                                    },
+                                                                    {
+                                                                        "string": "2",
+                                                                        "type": "string"
+                                                                    }
+                                                                ],
+                                                                "func": {
+                                                                    "string": "-",
+                                                                    "type": "string"
+                                                                },
+                                                                "type": "call"
+                                                            }
+                                                        ],
+                                                        "func": {
+                                                            "string": "fib",
+                                                            "type": "string"
+                                                        },
+                                                        "type": "call"
+                                                    },
+                                                    {
+                                                        "args": [
+                                                            {
+                                                                "args": [
+                                                                    {
+                                                                        "load": "n",
+                                                                        "type": "load"
+                                                                    },
+                                                                    {
+                                                                        "string": "1",
+                                                                        "type": "string"
+                                                                    }
+                                                                ],
+                                                                "func": {
+                                                                    "string": "-",
+                                                                    "type": "string"
+                                                                },
+                                                                "type": "call"
+                                                            }
+                                                        ],
+                                                        "func": {
+                                                            "string": "fib",
+                                                            "type": "string"
+                                                        },
+                                                        "type": "call"
+                                                    }
+                                                ],
+                                                "func": {
+                                                    "string": "+",
+                                                    "type": "string"
+                                                },
+                                                "type": "call"
+                                            }
+                                        ],
+                                        "type": "nodes"
+                                    }
+                                }
+                            ],
+                            "func": {
+                                "string": "if",
+                                "type": "string"
+                            },
+                            "type": "call"
+                        }
+                    ],
+                    "type": "nodes"
+                },
+                "var": {
+                    "string": "test",
+                    "type": "string"
+                },
+                "x": {
+                    "string": "2",
+                    "type": "string"
+                }
+            },
+            "type": "table"
+        }
+    ],
+    "stack": [],
+    "todos": []
+}

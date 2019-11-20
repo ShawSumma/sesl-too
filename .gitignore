@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/sesl
+sesl.so
+sesl.dylib
+sesl.dll
+sesl.a
+sesl.lib
+sesl-test-*
+*.exe
+*.o
+*.obj
+*.lst
