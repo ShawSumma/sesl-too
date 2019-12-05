@@ -66,11 +66,16 @@ Node jsonToNode(Json json, JsonState state)
 
 Value jsonToValue(Json json, JsonState state)
 {
-    Value ret = new Value;
+
+    if (json.object["type"].str == "up")
+    {
+        return state.values[$ - cast(size_t) json.object["up"].integer];
+    }
+    Value ret = nil;
     state.values ~= ret;
     scope (exit)
     {
-        state.values.popBack;
+        state.values.length--;
     }
     ret.type = json.object["type"].str.toUpper.to!(Value.Type);
     final switch (ret.type)
@@ -110,8 +115,8 @@ Value jsonToValue(Json json, JsonState state)
         {
             nodes ~= i.jsonToNode(state);
         }
-        ret.value.n.args = args;
-        ret.value.n.nodes = nodes;
+        ret.get!Proc.args = args;
+        ret.get!Proc.nodes = nodes;
         break;
     case Value.Type.FUNC:
         ret.value.s = json.object["func"].str.decode;
@@ -125,7 +130,7 @@ Json fromNode(Node node, JsonState state)
     state.nodes ~= node;
     scope (exit)
     {
-        state.nodes.popBack;
+        state.nodes.length--;
     }
     Json[string] obj;
     Json ret = obj;
@@ -176,10 +181,17 @@ Json fromNode(Node node, JsonState state)
 
 Json fromValue(Value val, JsonState state)
 {
+    foreach_reverse (i, v; state.values)
+    {
+        if (val is v)
+        {
+            return Json(["type": Json("up"), "up": Json(state.values.length - i)]);
+        }
+    }
     state.values ~= val;
     scope (exit)
     {
-        state.values.popBack;
+        state.values.length--;
     }
     Json[string] obj;
     Json ret = obj;
@@ -192,11 +204,11 @@ Json fromValue(Value val, JsonState state)
         ret.object["bool"] = val.value.b;
         break;
     case Value.Type.STRING:
-        ret.object["string"] = val.value.s.encode;
+        ret.object["string"] = val.get!string.encode;
         break;
     case Value.Type.LIST:
         Json[] jss;
-        foreach (i; val.value.l)
+        foreach (i; val.get!(Value[]))
         {
             jss ~= i.fromValue(state);
         }
@@ -205,7 +217,7 @@ Json fromValue(Value val, JsonState state)
     case Value.Type.TABLE:
         Json[string] nobj;
         Json jss = nobj;
-        foreach (i; val.value.t.byKeyValue)
+        foreach (i; val.get!(Value[string]).byKeyValue)
         {
             jss.object[i.key.encode] = i.value.fromValue(state);
         }
@@ -213,13 +225,13 @@ Json fromValue(Value val, JsonState state)
         break;
     case Value.Type.NODES:
         Json[] args;
-        foreach (i; val.value.n.args)
+        foreach (i; val.get!Proc.args)
         {
             Json sj = i.encode;
             args ~= sj;
         }
         Json[] nodes;
-        foreach (i; val.value.n.nodes)
+        foreach (i; val.get!Proc.nodes)
         {
             nodes ~= i.fromNode(state);
         }
@@ -227,7 +239,7 @@ Json fromValue(Value val, JsonState state)
         ret.object["nodes"] = nodes;
         break;
     case Value.Type.FUNC:
-        ret.object["func"] = val.value.s.encode;
+        ret.object["func"] = val.get!string.encode;
         break;
     }
     return ret;
@@ -238,7 +250,7 @@ Json makeWorldJson()
     Value[] slocals;
     foreach (i; locals)
     {
-        slocals ~= new Value(i);
+        slocals ~= makeThing(i);
     }
     Json[] jslocals;
     foreach (i; slocals[1 .. $])
@@ -271,24 +283,21 @@ string makeWorld()
 void loadWorld(string world)
 {
     Json js = world.parseJSON;
-    Value[] nstack;
+    stack = null;
     foreach (i; js.object["stack"].array)
     {
-        nstack ~= i.jsonToValue(new JsonState);
+        stack ~= i.jsonToValue(new JsonState);
     }
     Value[string][] nlocals;
     foreach (i; js.object["locals"].array)
     {
-        nlocals ~= i.jsonToValue(new JsonState).value.t;
+        nlocals ~= i.jsonToValue(new JsonState).get!(Value[string]);
     }
-    Node[] ntodo;
+    todo = null;
     foreach (i; js.object["todos"].array)
     {
-        ntodo ~= i.jsonToNode(new JsonState);
+        todo ~= i.jsonToNode(new JsonState);
     }
-    stack = nstack;
     Value[string] locals0 = locals[0];
-    locals.popBackN(locals.length-2);
-    locals ~= nlocals;
-    todo = ntodo;
+    locals = [locals0] ~ nlocals;
 }

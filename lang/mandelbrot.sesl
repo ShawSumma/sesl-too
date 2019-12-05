@@ -1,0 +1,38 @@
+set false (= 0 1)
+
+proc mandel-iter cx cy xscl yscl {
+    set x0 (- 0.45 (/ $cx $xscl 0.5))
+    set y0 (- 1 (/ $cy $yscl 0.5))
+    set x 0
+    set y 0
+    set max-iter 1000
+    set iter 0
+    while {if (> $max-iter $iter) {> 16 (+ (* $x $x) (* $y $y))} {pass $false}} {
+        set xtemp (+ $x0 (- (* $x $x) (* $y $y)))
+        set y (+ $y0 (* 2 $x $y))
+        set x $xtemp
+        set iter (+ $iter 1)
+    }
+    if (>= (- $max-iter 1) $iter) {
+        write #
+    } {
+        write .
+    }
+}
+
+proc mandel size {
+    set iy (* $size 2)
+    set ix $size
+    set x 0
+    while {< $x $ix} {
+        set y 0
+        while {< $y $iy} {
+            mandel-iter $x $y $ix $iy
+            set y (+ $y 1)
+        }
+        print
+        set x (+ $x 1)
+    }
+}
+
+mandel 50

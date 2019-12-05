@@ -1,4 +1,5 @@
 .dub
+.vscode
 docs.json
 __dummy.html
 docs/
@@ -13,3 +14,5 @@ sesl-test-*
 *.o
 *.obj
 *.lst
+callgrind.out.*
+vgcore.*

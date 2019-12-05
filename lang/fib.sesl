@@ -5,4 +5,4 @@ proc fib n {
         + (fib (- $n 2)) (fib (- $n 1))
     }
 }
-print (fib 25)
+print (fib 35)

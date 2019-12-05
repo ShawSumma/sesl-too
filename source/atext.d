@@ -14,15 +14,18 @@ import core.sys.posix.stdlib;
 import core.sys.posix.unistd;
 import core.sys.posix.fcntl;
 
-class ExitException : Exception {
+class ExitException : Exception
+{
 	char letter;
-	this(char l) {
+	this(char l)
+	{
 		letter = l;
 		super("Got Ctrl-" ~ [l]);
 	}
 }
 
-class Reader {
+class Reader
+{
 	char[][] history;
 	File input;
 	File output;
@@ -30,93 +33,121 @@ class Reader {
 	long index = 0;
 	long lastRender = 0;
 	size_t histIndex = 0;
-	this(char[][] h, File i=stdin, File o=stdout) {
+	this(char[][] h, File i = stdin, File o = stdout)
+	{
 		history = h ~ [[]];
 		input = i;
 		output = o;
 	}
-	private ref char[] line() {
+
+	private ref char[] line()
+	{
 		return history[histIndex];
 	}
-	private void renderLine(T)(T newLine) {
-		foreach(i; 0..lastRender) {
+
+	private void renderLine(T)(T newLine)
+	{
+		foreach (i; 0 .. lastRender)
+		{
 			output.moveLeft;
 		}
-		foreach (i; 0..newLine.length+1) {
+		foreach (i; 0 .. newLine.length + 1)
+		{
 			output.moveRight;
 			output.printStill(' ');
 		}
-		foreach (i; 0..newLine.length+1) {
+		foreach (i; 0 .. newLine.length + 1)
+		{
 			output.moveLeft;
 		}
 		output.printStill(newLine);
 		lastRender = index;
-		foreach(i; 0..lastRender) {
+		foreach (i; 0 .. lastRender)
+		{
 			output.moveRight;
 		}
 	}
-	private void deleteOne() {
-		if (index > 0) {
-			history[histIndex] = line[0..index-1] ~ line[index..$];
-			index --;
+
+	private void deleteOne()
+	{
+		if (index > 0)
+		{
+			history[histIndex] = line[0 .. index - 1] ~ line[index .. $];
+			index--;
 		}
-		else {
+		else
+		{
 			history[histIndex] = null;
 		}
 	}
-	private bool delegate() getWordFunc() {
-		if (index < line.length && line[index] == ' ') {
-			return {
-				return canFind(" ", line[index]);
-			};
+
+	private bool delegate() getWordFunc()
+	{
+		if (index < line.length && line[index] == ' ')
+		{
+			return { return canFind(" ", line[index]); };
 		}
-		else if (index < line.length && canFind("()", line[index])) {
-			return {
-				return canFind("()", line[index]);
-			};
+		else if (index < line.length && canFind("()", line[index]))
+		{
+			return { return canFind("()", line[index]); };
 		}
-		else {
-			return {
-				return !canFind(" ()", line[index]);
-			};
+		else
+		{
+			return { return !canFind(" ()", line[index]); };
 		}
 	}
-	private void leftWord() {
-		if (index > 0) {
-			index --;
+
+	private void leftWord()
+	{
+		if (index > 0)
+		{
+			index--;
 		}
 		bool delegate() func = getWordFunc;
-		while (index >= 0)  {
-			if (func()) {
-				index --;
+		while (index >= 0)
+		{
+			if (func())
+			{
+				index--;
 			}
-			else {
+			else
+			{
 				break;
 			}
 		}
-		index ++;
+		index++;
 	}
-	private void rightWord() {
+
+	private void rightWord()
+	{
 		bool delegate() func = getWordFunc;
-		while (index < line.length)  {
-			if (func()) {
-				index ++;
+		while (index < line.length)
+		{
+			if (func())
+			{
+				index++;
 			}
-			else {
+			else
+			{
 				break;
 			}
 		}
 	}
-	private void reset() {
+
+	private void reset()
+	{
 		index = 0;
 		lastRender = 0;
 		histIndex = 0;
 	}
-	string read() {
+
+	string read()
+	{
 		reset;
 		char[][] oldHistory;
 		term = input.rawMode;
-		foreach (historyLine; history) {
+		foreach (historyLine; history)
+		{
 			oldHistory ~= historyLine.dup;
 		}
 		input.flush;
@@ -124,8 +155,10 @@ class Reader {
 		histIndex = history.length;
 		history ~= new char[0];
 		char got = input.readKeyAbs;
-		scope(exit) {
-			foreach (i; 0..index) {
+		scope (exit)
+		{
+			foreach (i; 0 .. index)
+			{
 				output.moveLeft;
 			}
 			input.noRawMode(term);
@@ -133,51 +166,69 @@ class Reader {
 			history = oldHistory;
 		}
 		renderLine(line);
-		while (true) {
-			if (got == 0) {
+		while (true)
+		{
+			if (got == 0)
+			{
 				exit(0);
 			}
-			if (got == 27) {
+			if (got == 27)
+			{
 				got = input.readKeyAbs;
-				if (got == '[') {
+				if (got == '[')
+				{
 					got = input.readKeyAbs;
-					if (got == '1') {
+					if (got == '1')
+					{
 						got = input.readKeyAbs;
-						if (got == ';') {
+						if (got == ';')
+						{
 							got = input.readKeyAbs;
-							if (got == '5') {
+							if (got == '5')
+							{
 								got = input.readKeyAbs;
-								if (got == 'C') {
+								if (got == 'C')
+								{
 									rightWord;
 								}
-								if (got == 'D') {
+								if (got == 'D')
+								{
 									leftWord;
 								}
 							}
 						}
 					}
-					else {
-						if (got == 'C') {
-							if (index < line.length) {
-								index ++;
+					else
+					{
+						if (got == 'C')
+						{
+							if (index < line.length)
+							{
+								index++;
 							}
 						}
-						if (got == 'D') {
-							if (index > 0) {
-								index --;
+						if (got == 'D')
+						{
+							if (index > 0)
+							{
+								index--;
 							}
 						}
-						if (got == 'A') {
+						if (got == 'A')
+						{
 							renderLine(' '.repeat.take(line.length));
-							if (histIndex > 0) {
-								histIndex --;
+							if (histIndex > 0)
+							{
+								histIndex--;
 							}
 							index = line.length;
 						}
-						if (got == 'B') {
+						if (got == 'B')
+						{
 							renderLine(' '.repeat.take(line.length));
-							if (histIndex < history.length-1) {
-								histIndex ++;
+							if (histIndex < history.length - 1)
+							{
+								histIndex++;
 							}
 							index = line.length;
 						}
@@ -186,74 +237,81 @@ class Reader {
 				}
 				renderLine(line);
 			}
-			else if (got == 127) {
+			else if (got == 127)
+			{
 				deleteOne;
 				renderLine(line);
 			}
-			else if (iscntrl(got)) {
-				if (getCtrl(got) == 'm') {
+			else if (iscntrl(got))
+			{
+				if (getCtrl(got) == 'm')
+				{
 					break;
 				}
-				else if (getCtrl(got) == 'r') {
+				else if (getCtrl(got) == 'r')
+				{
 					char[] ln;
 					renderLine(ln);
 					break;
 				}
-				else if (getCtrl(got) == 'j') {
+				else if (getCtrl(got) == 'j')
+				{
 					output.clearScreen;
-					return read;					
+					return read;
 				}
-				else if (getCtrl(got) == 'd') {
+				else if (getCtrl(got) == 'd')
+				{
 					input.noRawMode(term);
 					exit(0);
 				}
-				else {
-					throw new ExitException(getCtrl(got));
+				else
+				{
+					throw new ExitException(got);
 				}
 			}
-			else {
-				if (index >= line.length) {
+			else
+			{
+				if (index >= line.length)
+				{
 					line ~= got;
 				}
-				else {
-					history[histIndex] = line[0..index] ~ [got] ~ line[index..$];
+				else
+				{
+					history[histIndex] = line[0 .. index] ~ [got] ~ line[index .. $];
 				}
-				index ++;
+				index++;
 				renderLine(line);
 			}
 			got = input.readKeyAbs;
 		}
-		if (oldHistory.length == 0 || oldHistory[$-1] != line) {
+		if (oldHistory.length == 0 || oldHistory[$ - 1] != line)
+		{
 			oldHistory ~= line;
 		}
-		return cast(string) history[$-1];
+		return cast(string) history[$ - 1];
 	}
-	string readln(string prompt=null) {
+
+	string readln(string prompt = null)
+	{
 		output.write(prompt);
-		string ret;
-		try {
-			ret = read;
-		}
-		catch (ExitException ex) {
-			if (ex.letter == 'c') {
-				output.writeln;
-			}
-			throw ex;
-		}
+		string ret = read;
 		output.writeln;
 		return ret;
 	}
 }
 
-char getCtrl(char c) {
-	return cast(char) (c-1 + 'a');
+char getCtrl(char c)
+{
+	return cast(char)(c - 1 + 'a');
 }
 
-void noRawMode(File inf, termios initTermios) {
+void noRawMode(File inf, termios initTermios)
+{
 	tcsetattr(inf.fileno, TCSAFLUSH, &initTermios);
 }
 
-termios rawMode(File inf) {
+termios rawMode(File inf)
+{
 	termios initTermios;
 	tcgetattr(inf.fileno, &initTermios);
 	termios raw = initTermios;
@@ -265,34 +323,41 @@ termios rawMode(File inf) {
 	return initTermios;
 }
 
-char readKeyAbs(File f) {
+char readKeyAbs(File f)
+{
 	char c;
 	read(f.fileno, &c, 1);
 	return c;
 }
 
-void moveLeft(File f) {
+void moveLeft(File f)
+{
 	f.write("\x1b[1D");
 	f.flush;
 }
 
-void moveRight(File f) {
+void moveRight(File f)
+{
 	f.write("\x1b[1C");
 	f.flush;
 }
 
-void clearScreen(File f) {
+void clearScreen(File f)
+{
 	f.printStill("\x1b[2J");
 }
 
-void printStill(T...)(File output, T as) {
+void printStill(T...)(File output, T as)
+{
 	size_t count;
-	foreach (a; as) {
+	foreach (a; as)
+	{
 		string got = a.to!string;
 		output.write(got);
 		count += got.length;
 	}
-	foreach (i; 0..count) {
+	foreach (i; 0 .. count)
+	{
 		output.moveLeft;
 	}
 	output.flush;
