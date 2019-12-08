@@ -140,13 +140,13 @@ Node parseWord(ref string s)
             else
             {
                 ret.type = Node.Type.PUSH;
-                ret.value.value = Value(Intern(str));
+                ret.value.value = makeThing(Intern(str));
             }
         }
         else
         {
             ret.type = Node.Type.PUSH;
-            ret.value.value = Value(Intern(str));
+            ret.value.value = makeThing(Intern(str));
         }
     }
     return ret;

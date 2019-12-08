@@ -14,6 +14,13 @@ version = Readln;
 
 void main(string[] rawArgs)
 {
+    enum E: ubyte
+    {
+        A,
+        B,
+        C,
+    }
+    writeln(Value.sizeof);
     string[] args;
     bool[string] things = ["repl" : false,];
     string file;

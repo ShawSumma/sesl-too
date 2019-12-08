@@ -4,6 +4,7 @@ docs.json
 __dummy.html
 docs/
 /sesl
+app
 sesl.so
 sesl.dylib
 sesl.dll
@@ -16,3 +17,4 @@ sesl-test-*
 *.lst
 callgrind.out.*
 vgcore.*
+perf*

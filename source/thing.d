@@ -26,15 +26,15 @@ struct Value
     {
         bool b;
         Number d;
-        string s;
         Intern i;
-        Value[] l;
         Value[string] t;
-        Proc* n;
+        string* s;
+        Vector!Value* l;
+        Proc n;
         Func f;
     }
 
-    enum Type
+    enum Type : byte
     {
         NONE,
         BOOL,
@@ -58,12 +58,12 @@ struct Value
         {
             return value.i;
         }
-        return Intern(value.s);
+        return Intern(*value.s);
     }
 
-    ref Value[] get(T)() if (is(T == Value[]))
+    ref Vector!Value get(T)() if (is(T == Vector!Value))
     {
-        return value.l;
+        return *value.l;
     }
 
     ref Value[string] get(T)() if (is(T == Value[string]))
@@ -73,7 +73,7 @@ struct Value
 
     ref Proc get(T)() if (is(T == Proc))
     {
-        return *value.n;
+        return value.n;
     }
 
     Number get(T)() if (is(T == Number))
@@ -86,7 +86,7 @@ struct Value
         {
             return value.i.val.to!Number;
         }
-        return value.s.to!Number;
+        return (*value.s).to!Number;
     }
 
     this(bool v)
@@ -103,13 +103,13 @@ struct Value
 
     this(string v)
     {
-        value.s = v;
+        value.s = [v].ptr;
         type = type.STRING;
     }
 
-    this(Value[] v)
+    this(Vector!Value v)
     {
-        value.l = v;
+        value.l = [v].ptr;
         type = type.LIST;
     }
 
@@ -176,7 +176,7 @@ struct Value
         case Type.NUMBER:
             return value.d.to!string;
         case Type.STRING:
-            return value.s;
+            return *value.s;
         case Type.INTERN:
             return value.i.val;
         case Type.LIST:
@@ -186,12 +186,14 @@ struct Value
         case Type.NODES:
             return "(nodes)";
         case Type.FUNC:
-            return "(func " ~ *value.f.name ~ ")";
+            return "(func " ~ value.f.name ~ ")";
         }
     }
 
-    Type type = Type.NONE;
+align(4):
+
     InternalUnion value = void;
+    Type type = Type.NONE;
 }
 
 bool equalTo(Value lhs, Value rhs)
@@ -213,12 +215,12 @@ bool equalTo(Value lhs, Value rhs)
     case Value.Type.NUMBER:
         return lhs.value.d == rhs.value.d;
     case Value.Type.STRING:
-        return lhs.value.s == rhs.value.s;
+        return *lhs.value.s == *rhs.value.s;
     case Value.Type.INTERN:
         return lhs.value.i == rhs.value.i;
     case Value.Type.LIST:
-        Value[] lhl = lhs.get!(Value[]);
-        Value[] rhl = rhs.get!(Value[]);
+        Vector!Value lhl = lhs.get!(Vector!Value);
+        Vector!Value rhl = rhs.get!(Vector!Value);
         if (lhl.length != rhl.length)
         {
             return false;
@@ -281,19 +283,24 @@ bool eqTo(Value lhs, Value rhs) @nogc
     }
 }
 
-struct Proc
+class Proc
 {
     Intern[] args;
     Node[] nodes;
+    this(Intern[] a, Node[] n)
+    {
+        args = a;
+        nodes = n;
+    }
 }
 
-struct Func
+class Func
 {
     Value function(Args) dfunc;
-    string* name;
+    string name;
     this(string n)
     {
-        name = [n].ptr;
+        name = n;
         dfunc = n.byName;
     }
 }
@@ -301,7 +308,7 @@ struct Func
 Value dFunc(string str)
 {
     Value ret;
-    ret.value.f = Func(str);
+    ret.value.f = new Func(str);
     ret.type = Value.Type.FUNC;
     return ret;
 }

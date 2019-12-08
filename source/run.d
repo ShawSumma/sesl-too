@@ -1,7 +1,6 @@
 import std.stdio;
 import std.range;
 import std.conv;
-import std.container;
 import core.stdc.stdlib;
 import lib.funcs;
 import thing;

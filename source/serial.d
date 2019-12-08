@@ -8,6 +8,7 @@ import std.string;
 import thing;
 import parser;
 import run;
+import vector;
 import intern;
 
 alias Json = JSONValue;
@@ -87,19 +88,19 @@ Value jsonToValue(Json json, JsonState state)
         ret.value.d = json.object["number"].str.decode.to!Number;
         break;
     case Value.Type.STRING:
-        ret.value.s = json.object["string"].str.decode;
+        ret = makeThing(json.object["string"].str.decode);
         break;
     case Value.Type.INTERN:
         string sv = json.object["string"].str.decode;
         ret.value.i = Intern(sv);
         break;
     case Value.Type.LIST:
-        Value[] lis;
+        Vector!Value lis;
         foreach (i; json.object["list"].array)
         {
             lis ~= i.jsonToValue(state);
         }
-        ret.value.l = lis;
+        ret = makeThing(lis);
         break;
     case Value.Type.TABLE:
         Value[string] tab;
@@ -215,7 +216,7 @@ Json fromValue(Value val, JsonState state)
         break;
     case Value.Type.LIST:
         Json[] jss;
-        foreach (i; val.get!(Value[]))
+        foreach (i; val.get!(Vector!Value))
         {
             jss ~= i.fromValue(state);
         }
@@ -246,7 +247,7 @@ Json fromValue(Value val, JsonState state)
         ret.object["nodes"] = nodes;
         break;
     case Value.Type.FUNC:
-        ret.object["func"] = (*val.value.f.name).encode;
+        ret.object["func"] = val.value.f.name.encode;
         break;
     }
     return ret;

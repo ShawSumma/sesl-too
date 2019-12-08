@@ -39,8 +39,8 @@ Value fnSet(Args args)
                     .to!string)] = target;
         break;
     case Value.Type.LIST:
-        Value[] tl = target.get!(Value[]);
-        foreach (i, v; args[0].get!(Value[]))
+        Vector!Value tl = target.get!(Vector!Value);
+        foreach (i, v; args[0].get!(Vector!Value))
         {
             fnSet(Args(v, tl[i]));
         }
