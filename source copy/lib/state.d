@@ -5,51 +5,49 @@ import std.range;
 import intern;
 import thing;
 import run;
-import vector;
 
-Value fnProc(Args args)
+Value fnProc(Value[] args)
 {
     Value ret = args[$ - 1];
     foreach (i; args[1 .. $ - 1])
     {
         ret.get!Proc.args ~= i.get!Intern;
     }
-    locals[$ - 1][args[0].get!Intern] = ret;
+    locals[locals.length - 1][args[0].get!Intern] = ret;
     return ret;
 }
 
-Value fnSet(Args args)
+Value fnSet(Value[] args)
 {
     if (args.length == 1)
     {
-        locals[$ - 1][args[0].get!Intern] = nil;
+        locals[locals.length - 1][args[0].get!Intern] = nil;
         return nil;
     }
     Value target = args[1];
     switch (args[0].type)
     {
     case Value.Type.STRING:
-        locals[$ - 1][args[0].get!Intern] = target;
+        locals[locals.length - 1][args[0].get!Intern] = target;
         break;
     case Value.Type.INTERN:
-        locals[$ - 1][args[0].get!Intern] = target;
+        locals[locals.length - 1][args[0].get!Intern] = target;
         break;
     case Value.Type.NUMBER:
-        locals[$ - 1][Intern(args[0].get!double
-                    .to!string)] = target;
+        locals[locals.length - 1][Intern(args[0].get!double.to!string)] = target;
         break;
     case Value.Type.LIST:
         Value[] tl = target.get!(Value[]);
         foreach (i, v; args[0].get!(Value[]))
         {
-            fnSet(Args(v, tl[i]));
+            fnSet([v, tl[i]]);
         }
         break;
     case Value.Type.TABLE:
         Value[string] tt = target.get!(Value[string]);
         foreach (kv; args[0].get!(Value[string]).byKeyValue)
         {
-            fnSet(Args(makeThing(kv.key), tt[kv.key]));
+            fnSet([makeThing(kv.key), tt[kv.key]]);
         }
         break;
     default:

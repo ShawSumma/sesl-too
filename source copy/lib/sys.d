@@ -2,7 +2,7 @@ module lib.sys;
 import std.process;
 import thing;
 
-Value fnSystem(Args args)
+Value fnSystem(Value[] args)
 {
     string[] cmd;
     foreach (i; args)

@@ -1,19 +1,34 @@
 module lib.flow;
 import std.stdio;
+import std.functional;
 import thing;
 import parser;
 import run;
 import build;
 
-Value fnIf(Value[] args)
+Value iffImpl()
+{
+    return dFunc("while:iftrue");
+}
+
+alias iff = memoize!iffImpl;
+
+// private Value iff = void;
+// static this()
+// {
+//     iff.value.f.name = ["while:iftrue"].ptr;
+//     iff.value.f.dfunc = &helpWhileByIfTrue;
+// }
+
+Value fnIf(Args args)
 {
     if (args[0].isTrue)
     {
-        callNodes!false(args[1].get!Proc, null);
+        callNodes!false(args[1].get!Proc, noargs);
     }
     else if (args.length == 3)
     {
-        callNodes!false(args[2].get!Proc, null);
+        callNodes!false(args[2].get!Proc, noargs);
     }
     else
     {
@@ -23,7 +38,7 @@ Value fnIf(Value[] args)
     return nil;
 }
 
-Value helpWhileByIfTrue(Value[] args)
+Value helpWhileByIfTrue(Args args)
 {
     if (!args[0].isTrue)
     {
@@ -32,19 +47,19 @@ Value helpWhileByIfTrue(Value[] args)
     runDocallNode(3);
     runPushNode(args[2]);
     runPushNode(args[1]);
-    callNodes!false(args[1].get!Proc, null);
-    runPushNode(dFunc("while:iftrue"));
+    callNodes!false(args[1].get!Proc, noargs);
+    runPushNode(iff);
     runPopNode;
-    callNodes!false(args[2].get!Proc, null);
+    callNodes!false(args[2].get!Proc, noargs);
     runPopNode;
     return nil;
 }
 
-Value fnWhile(Value[] args)
+Value fnWhile(Args args)
 {
     runDocallNode(3);
     runPushNode(args[1]);
     runPushNode(args[0]);
-    callNodes!false(args[0].get!Proc, null);
-    return dFunc("while:iftrue");
+    callNodes!false(args[0].get!Proc, noargs);
+    return iff;
 }

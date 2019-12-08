@@ -1,4 +1,3 @@
-set false (= 0 1)
 
 proc mandel-iter cx cy xscl yscl {
     set x0 (- 0.45 (/ $cx $xscl 0.5))

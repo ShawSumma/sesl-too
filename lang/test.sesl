@@ -1,8 +1,0 @@
-proc rec n {
-    print $n
-    if (< $n 1000000) {
-        rec (+ $n 1)
-    }
-}
-
-rec 1

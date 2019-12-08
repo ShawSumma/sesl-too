@@ -1,5 +1,5 @@
 name "sesl"
-description "Sesl V2"
+description "Simple Extended Scripting Language"
 authors "Shaw Summa"
 copyright "Copyright © 2019, Shaw Summa"
 license "MIT"

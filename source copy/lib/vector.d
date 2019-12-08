@@ -2,19 +2,19 @@ module lib.vector;
 import std.conv;
 import thing;
 
-Value fnVectorNew(Args args)
+Value fnVectorNew(Value[] args)
 {
-    return makeThing(args.values[0..args.length].dup);
+    return makeThing(args.dup);
 }
 
-Value fnVectorSet(Args args)
+Value fnVectorSet(Value[] args)
 {
     Value ret = args[2];
     args[0].get!(Value[])[args[1].get!Number.to!size_t] = ret;
     return args[0];
 }
 
-Value fnVectorIndex(Args args)
+Value fnVectorIndex(Value[] args)
 {
     Value ret = args[0];
     foreach (i; args[1 .. $])

@@ -1,7 +1,7 @@
 module lib.sesl;
 import thing;
 
-Value fnPass(Args args)
+Value fnPass(Value[] args)
 {
     if (args.length == 0)
     {

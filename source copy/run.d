@@ -63,7 +63,7 @@ static this()
 
 Value getLocal(Intern s)
 {
-    Value* tops = s in locals[$ - 1];
+    Value* tops = s in locals[locals.length - 1];
     if (tops)
     {
         return *tops;
@@ -93,7 +93,7 @@ void run()
 {
     runloop: while (todo.length != 0)
     {
-        Node cur = todo[$ - 1];
+        Node cur = todo[todo.length - 1];
         todo.popBack;
         final switch (cur.type)
         {
@@ -103,7 +103,7 @@ void run()
             stack.popBack;
             break;
         case Node.Type.POPV:
-            stack[$ - 2] = stack[$ - 1];
+            stack[stack.length - 2] = stack[stack.length - 1];
             stack.popBack;
             break;
         case Node.Type.PUSH:
@@ -124,9 +124,9 @@ void run()
             }
             break;
         case Node.Type.DOCALL:
-            Args args = Args(stack[$ - cur.value.unum .. $]);
+            Value[] args = stack.values[stack.length - cur.value.unum .. stack.length];
             stack.length -= cur.value.unum;
-            Value last = stack[$ - 1];
+            Value last = stack[stack.length - 1];
             stack.popBack;
             while (true)
             {
@@ -137,7 +137,7 @@ void run()
                     callNodes(proc, args);
                     continue runloop;
                 case Value.Type.FUNC:
-                    stack ~= last.value.f.dfunc(args);
+                    stack ~= byName(last.value.s)(args);
                     continue runloop;
                 case Value.Type.STRING:
                     last = getLocal(Intern(last.get!string));
@@ -160,7 +160,7 @@ void run()
     }
 }
 
-void callNodes(bool scoped = true)(Proc proc, Args args)
+void callNodes(bool scoped = true)(Proc proc, Value[] args)
 {
     Node[] nodes = proc.nodes;
     static if (scoped)

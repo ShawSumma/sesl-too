@@ -2,7 +2,7 @@ module lib.math;
 import thing;
 import std.conv;
 
-Value fnAdd(Args args)
+Value fnAdd(Value[] args)
 {
     Number ret = 0;
     foreach (i; args)
@@ -12,7 +12,7 @@ Value fnAdd(Args args)
     return makeThing(ret);
 }
 
-Value fnSub(Args args)
+Value fnSub(Value[] args)
 {
     Number ret = args[0].get!Number;
     if (args.length == 1)
@@ -26,7 +26,7 @@ Value fnSub(Args args)
     return makeThing(ret);
 }
 
-Value fnMul(Args args)
+Value fnMul(Value[] args)
 {
     Number ret = 1;
     foreach (i; args)
@@ -36,7 +36,7 @@ Value fnMul(Args args)
     return makeThing(ret);
 }
 
-Value fnDiv(Args args)
+Value fnDiv(Value[] args)
 {
     Number ret = args[0].get!Number;
     if (args.length == 1)
@@ -50,7 +50,7 @@ Value fnDiv(Args args)
     return makeThing(ret);
 }
 
-Value fnMod(Args args)
+Value fnMod(Value[] args)
 {
     Number ret = args[0].get!Number;
     foreach (i; args[1 .. $])
@@ -60,7 +60,7 @@ Value fnMod(Args args)
     return makeThing(ret);
 }
 
-// Value fnRemander(Args args)
+// Value fnRemander(Value[] args)
 // {
 //     Number ret = args[0].get!Number;
 //     foreach (i; args[1 .. $])

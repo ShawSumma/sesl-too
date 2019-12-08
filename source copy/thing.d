@@ -7,13 +7,11 @@ import std.functional;
 import parser;
 import intern;
 import vector;
-import lib.funcs;
 
 alias Number = double;
-alias Args = Slice!(Value, ushort);
+alias Args = Slice!Value;
 
 Value nil;
-Args noargs;
 
 Value makeThing(T...)(T v)
 {
@@ -31,7 +29,6 @@ struct Value
         Value[] l;
         Value[string] t;
         Proc* n;
-        Func f;
     }
 
     enum Type
@@ -54,8 +51,7 @@ struct Value
 
     Intern get(T)() if (is(T == Intern))
     {
-        if (type == Type.INTERN)
-        {
+        if (type == Type.INTERN) {
             return value.i;
         }
         return Intern(value.s);
@@ -125,8 +121,7 @@ struct Value
         type = type.NODES;
     }
 
-    this(Intern v)
-    {
+    this(Intern v) {
         value.i = v;
         type = type.INTERN;
     }
@@ -186,7 +181,7 @@ struct Value
         case Type.NODES:
             return "(nodes)";
         case Type.FUNC:
-            return "(func " ~ *value.f.name ~ ")";
+            return "(func " ~ value.s ~ ")";
         }
     }
 
@@ -254,7 +249,7 @@ bool equalTo(Value lhs, Value rhs)
     case Value.Type.NODES:
         return lhs.get!Proc is rhs.get!Proc;
     case Value.Type.FUNC:
-        return lhs.value.f.dfunc == rhs.value.f.dfunc;
+        return lhs.get!string == rhs.get!string;
     }
 }
 
@@ -287,21 +282,9 @@ struct Proc
     Node[] nodes;
 }
 
-struct Func
-{
-    Value function(Args) dfunc;
-    string* name;
-    this(string n)
-    {
-        name = [n].ptr;
-        dfunc = n.byName;
-    }
-}
-
 Value dFunc(string str)
 {
-    Value ret;
-    ret.value.f = Func(str);
+    Value ret = makeThing(str);
     ret.type = Value.Type.FUNC;
     return ret;
 }

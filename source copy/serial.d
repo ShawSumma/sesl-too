@@ -124,7 +124,8 @@ Value jsonToValue(Json json, JsonState state)
         ret.get!Proc.nodes = nodes;
         break;
     case Value.Type.FUNC:
-        return dFunc(json.object["func"].str.decode);
+        ret.value.s = json.object["func"].str.decode;
+        break;
     }
     return ret;
 }
@@ -246,7 +247,7 @@ Json fromValue(Value val, JsonState state)
         ret.object["nodes"] = nodes;
         break;
     case Value.Type.FUNC:
-        ret.object["func"] = (*val.value.f.name).encode;
+        ret.object["func"] = val.get!string.encode;
         break;
     }
     return ret;

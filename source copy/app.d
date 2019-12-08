@@ -8,7 +8,6 @@ import run;
 import atext;
 import build;
 import intern;
-import vector;
 
 version = Readln;
 

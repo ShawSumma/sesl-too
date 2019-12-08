@@ -5,7 +5,7 @@ import std.file;
 import std.conv;
 import thing;
 
-Value fnPrint(Args args)
+Value fnPrint(Value[] args)
 {
     foreach (i, v; args)
     {
@@ -19,7 +19,7 @@ Value fnPrint(Args args)
     return nil;
 }
 
-Value fnWrite(Args args)
+Value fnWrite(Value[] args)
 {
     foreach (i, v; args)
     {
@@ -32,19 +32,19 @@ Value fnWrite(Args args)
     return nil;
 }
 
-Value fnReadFrom(Args args)
+Value fnReadFrom(Value[] args)
 {
     return makeThing(cast(string) read(args[0].get!string));
 }
 
-Value fnSaveTo(Args args)
+Value fnSaveTo(Value[] args)
 {
     File fout = File(args[0].get!string, "w");
     fout.write(args[1].to!string);
     return nil;
 }
 
-Value fnCat(Args args)
+Value fnCat(Value[] args)
 {
     string ret;
     foreach (i; args)

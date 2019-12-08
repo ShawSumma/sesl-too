@@ -14,7 +14,7 @@ import lib.sys;
 import lib.table;
 import lib.vector;
 
-Value function(Args) byName(string name)
+Value function(Value[]) byName(string name)
 {
     switch (name)
     {

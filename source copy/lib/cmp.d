@@ -1,7 +1,7 @@
 module lib.cmp;
 import thing;
 
-Value fnEq(Args args)
+Value fnEq(Value[] args)
 {
     foreach (i, x; args[0 .. $ - 1])
     {
@@ -16,7 +16,7 @@ Value fnEq(Args args)
     return makeThing(true);
 }
 
-Value fnNeq(Args args)
+Value fnNeq(Value[] args)
 {
     foreach (i, x; args[0 .. $ - 1])
     {
@@ -31,7 +31,7 @@ Value fnNeq(Args args)
     return makeThing(true);
 }
 
-Value fnLt(Args args)
+Value fnLt(Value[] args)
 {
     Value last = args[0];
     foreach (i; args[1 .. $])
@@ -45,7 +45,7 @@ Value fnLt(Args args)
     return makeThing(true);
 }
 
-Value fnGt(Args args)
+Value fnGt(Value[] args)
 {
     Value last = args[0];
     foreach (i; args[1 .. $])
@@ -59,7 +59,7 @@ Value fnGt(Args args)
     return makeThing(true);
 }
 
-Value fnLte(Args args)
+Value fnLte(Value[] args)
 {
     Value last = args[0];
     foreach (i; args[1 .. $])
@@ -73,7 +73,7 @@ Value fnLte(Args args)
     return makeThing(true);
 }
 
-Value fnGte(Args args)
+Value fnGte(Value[] args)
 {
     Value last = args[0];
     foreach (i; args[1 .. $])

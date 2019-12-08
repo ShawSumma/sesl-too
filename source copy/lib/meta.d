@@ -5,18 +5,18 @@ import run;
 import serial;
 import std.bigint;
 
-Value fnExec(Args args)
+Value fnExec(Value[] args)
 {
     loadWorld(args[0].get!string);
     return nil;
 }
 
-Value fnMakeWorld(Args _)
+Value fnMakeWorld(Value[] _)
 {
     return makeThing(makeWorld);
 }
 
-Value fnToJson(Args args)
+Value fnToJson(Value[] args)
 {
     return makeThing(args[0].fromValue(new JsonState).to!string);
 }
