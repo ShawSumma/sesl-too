@@ -110,6 +110,13 @@ struct Vector(T)
         values[length - 1] = nv;
     }
 
+    void opOpAssign(string op, T2)(T2 nv) if (op == "~")
+    {
+        foreach (i; nv) {
+            this ~= i;
+        }
+    }
+
     void opAssign(void* v)
     {
         if (v == null)

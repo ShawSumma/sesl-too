@@ -76,6 +76,15 @@ char first(ref string s)
     {
         return '\0';
     }
+    if (s[0] == '#')
+    {
+        s = s[1 .. $];
+        while(s.length > 0 && s[0] != '\n' && s[0] != '\r')
+        {
+            s = s[1 .. $];
+        }
+        return s.first;
+    }
     return s[0];
 }
 

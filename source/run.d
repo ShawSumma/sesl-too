@@ -47,6 +47,7 @@ static this()
     first("pass", dFunc("pass"));
     first("set", dFunc("set"));
     first("proc", dFunc("proc"));
+    first("lambda", dFunc("lambda"));
     first("print", dFunc("print"));
     first("write", dFunc("write"));
     first("table", dFunc("table"));

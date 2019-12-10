@@ -6,18 +6,9 @@ import parser;
 import run;
 import build;
 
-Value iffImpl()
-{
-    return dFunc("while:iftrue");
-}
-
-alias iff = memoize!iffImpl;
-
-// private Value iff = void;
-// static this()
+// Value fnIf(Args args)
 // {
-//     iff.value.f.name = ["while:iftrue"].ptr;
-//     iff.value.f.dfunc = &helpWhileByIfTrue;
+//     return args.at(0).call.iftrue(args.at(1), args.at(2)).ret;
 // }
 
 Value fnIf(Args args)
@@ -48,7 +39,7 @@ Value helpWhileByIfTrue(Args args)
     runPushNode(args[2]);
     runPushNode(args[1]);
     callNodes!false(args[1].get!Proc, noargs);
-    runPushNode(iff);
+    dFunc("while:iftrue").runPushNode;
     runPopNode;
     callNodes!false(args[2].get!Proc, noargs);
     runPopNode;
@@ -61,5 +52,5 @@ Value fnWhile(Args args)
     runPushNode(args[1]);
     runPushNode(args[0]);
     callNodes!false(args[0].get!Proc, noargs);
-    return iff;
+    return dFunc("while:iftrue");
 }

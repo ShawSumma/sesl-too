@@ -18,6 +18,16 @@ Value fnProc(Args args)
     return ret;
 }
 
+Value fnLambda(Args args)
+{
+    Value ret = args[$ - 1];
+    foreach (i; args[0 .. $ - 1])
+    {
+        ret.get!Proc.args ~= i.get!Intern;
+    }
+    return ret;
+}
+
 Value fnSet(Args args)
 {
     if (args.length == 1)

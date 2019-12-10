@@ -10,17 +10,10 @@ import build;
 import intern;
 import vector;
 
-version = Readln;
+version = Reader;
 
 void main(string[] rawArgs)
 {
-    enum E: ubyte
-    {
-        A,
-        B,
-        C,
-    }
-    writeln(Value.sizeof);
     string[] args;
     bool[string] things = ["repl" : false,];
     string file;

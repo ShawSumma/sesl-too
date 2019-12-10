@@ -1,0 +1,9 @@
+#: creates binary operator that uses arguments x and y
+
+proc & fn {
+    lambda x y $fn
+}
+set binary-square (&{
+    + (* $x $x) (* $y $y)
+})
+print (binary-square 4 3)

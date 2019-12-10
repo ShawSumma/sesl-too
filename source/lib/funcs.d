@@ -20,12 +20,16 @@ Value function(Args) byName(string name)
     {
     case "if":
         return &fnIf;
+    // case "intern:if":
+    //     return &internIf;
     case "while":
         return &fnWhile;
     case "while:iftrue":
         return &helpWhileByIfTrue;
     case "pass":
         return &fnPass;
+    case "lambda":
+        return &fnLambda;
     case "print":
         return &fnPrint;
     case "write":

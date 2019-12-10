@@ -10,7 +10,7 @@ import vector;
 import lib.funcs;
 
 alias Number = double;
-alias Args = Slice!(Value, ushort);
+alias Args = Slice!(Value);
 
 Value nil;
 Args noargs;
@@ -18,6 +18,11 @@ Args noargs;
 Value makeThing(T...)(T v)
 {
     return Value(v);
+}
+
+Value makeThing(Value v)
+{
+    return v;
 }
 
 struct Value
@@ -64,6 +69,19 @@ struct Value
     ref Vector!Value get(T)() if (is(T == Vector!Value))
     {
         return *value.l;
+    }
+
+    Value opIndex(size_t n)
+    {
+        switch (type)
+        {
+        case Type.TABLE:
+            return value.t[n.to!string];
+        case Type.LIST:
+            return get!(Vector!Value)[n];
+        default:
+            throw new Exception("index error");
+        }
     }
 
     ref Value[string] get(T)() if (is(T == Value[string]))

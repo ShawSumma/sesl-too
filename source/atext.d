@@ -54,13 +54,13 @@ class Reader
 		foreach (i; 0 .. newLine.length + 1)
 		{
 			output.moveRight;
-			output.printStill(' ');
+			output.printStill!false(' ');
 		}
 		foreach (i; 0 .. newLine.length + 1)
 		{
 			output.moveLeft;
 		}
-		output.printStill(newLine);
+		output.printStill!false(newLine);
 		lastRender = index;
 		foreach (i; 0 .. lastRender)
 		{
@@ -347,7 +347,7 @@ void clearScreen(File f)
 	f.printStill("\x1b[2J");
 }
 
-void printStill(T...)(File output, T as)
+void printStill(bool fl=true, T...)(File output, T as)
 {
 	size_t count;
 	foreach (a; as)
@@ -360,5 +360,7 @@ void printStill(T...)(File output, T as)
 	{
 		output.moveLeft;
 	}
-	output.flush;
+	static if (fl) {
+		output.flush;
+	}
 }

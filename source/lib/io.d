@@ -43,13 +43,3 @@ Value fnSaveTo(Args args)
     fout.write(args[1].to!string);
     return nil;
 }
-
-Value fnCat(Args args)
-{
-    string ret;
-    foreach (i; args)
-    {
-        ret ~= i.to!string;
-    }
-    return makeThing(ret);
-}

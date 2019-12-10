@@ -35,7 +35,7 @@ Node jsonToNode(Json json, JsonState state)
         ret.value.value = json.object["value"].jsonToValue(state);
         break;
     case Node.Type.LOAD:
-        ret.value.str = json.object["load"].str.decode;
+        ret.value.interned = Intern(json.object["load"].str.decode);
         break;
     case Node.Type.CALL:
         Node[] nodes;
@@ -121,8 +121,7 @@ Value jsonToValue(Json json, JsonState state)
         {
             nodes ~= i.jsonToNode(state);
         }
-        ret.get!Proc.args = args;
-        ret.get!Proc.nodes = nodes;
+        ret.value.n = new Proc(args, nodes);
         break;
     case Value.Type.FUNC:
         return dFunc(json.object["func"].str.decode);
@@ -152,7 +151,7 @@ Json fromNode(Node node, JsonState state)
         ret.object["value"] = node.value.value.fromValue(state);
         break;
     case Node.Type.LOAD:
-        ret.object["load"] = node.value.str.encode;
+        ret.object["load"] = node.value.interned.val.encode;
         break;
     case Node.Type.CALL:
         Json[] call;
@@ -212,7 +211,7 @@ Json fromValue(Value val, JsonState state)
         ret.object["string"] = val.get!string.encode;
         break;
     case Value.Type.INTERN:
-        ret.object["string"] = val.get!Intern.rep;
+        ret.object["string"] = val.get!Intern.val;
         break;
     case Value.Type.LIST:
         Json[] jss;

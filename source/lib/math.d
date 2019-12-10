@@ -1,6 +1,7 @@
 module lib.math;
-import thing;
 import std.conv;
+import std.math;
+import thing;
 
 Value fnAdd(Args args)
 {
@@ -59,13 +60,3 @@ Value fnMod(Args args)
     }
     return makeThing(ret);
 }
-
-// Value fnRemander(Args args)
-// {
-//     Number ret = args[0].get!Number;
-//     foreach (i; args[1 .. $])
-//     {
-//         ret = 
-//     }
-//     return makeThing(ret;)
-// }

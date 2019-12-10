@@ -1,5 +1,7 @@
 module lib.sesl;
+import std.conv;
 import thing;
+import build;
 
 Value fnPass(Args args)
 {
